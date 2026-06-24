@@ -6,8 +6,9 @@ const session = require("express-session");
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const LocalStrategy = require("passport-local").Strategy;
-const usersRouter = require("./routes/usersRouter");
-const messagesRouter = require("./routes/messagesRouter");
+const usersRouter = require("./routes/users");
+const messagesRouter = require("./routes/messages");
+const pool = require("./db/pool");
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
@@ -55,6 +56,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
 app.use(passport.session());
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
