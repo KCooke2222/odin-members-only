@@ -22,5 +22,17 @@ router.post("/new", async (req, res, next) => {
     next(error);
   }
 });
+router.post("/:id/delete", async (req, res, next) => {
+  try {
+    if (!req.user || req.user.membership !== "admin") {
+      return res.redirect("/");
+    }
+
+    await db.query("DELETE FROM messages WHERE id = $1", [req.params.id]);
+    res.redirect("/");
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;

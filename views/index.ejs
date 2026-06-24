@@ -21,21 +21,27 @@
     </form>
   <%}%>
   <% messages.forEach((message) => { %>
-  <article>
-    <p><%= message.text %></p>
+    <article>
+      <p><%= message.text %></p>
 
-    <% if (message.image_url) { %>
-      <img src="<%= message.image_url %>" alt="" width="200" />
-    <% } %>
+      <% if (message.image_url) { %>
+        <img src="<%= message.image_url %>" alt="" width="200" />
+      <% } %>
 
-    <% if (message.username) { %>
-      <p>By <%= message.username %></p>
-    <% } %>
+      <% if (message.username) { %>
+        <p>By <%= message.username %></p>
+      <% } %>
 
-    <% if (message.created_at) { %>
-      <p><%= message.created_at.toLocaleString() %></p>
-    <% } %>
-  </article>
-<% }) %>
+      <% if (message.created_at) { %>
+        <p><%= message.created_at.toLocaleString() %></p>
+      <% } %>
+
+        <% if (currentUser && currentUser.membership === "admin") { %>
+  <form action="/messages/<%= message.id %>/delete" method="POST">
+    <button type="submit">Delete</button>
+  </form>
+<% } %>
+    </article>
+  <% }) %>
 </body>
 </html>
