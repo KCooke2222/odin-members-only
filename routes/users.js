@@ -77,4 +77,49 @@ router.get("/log-out", (req, res, next) => {
   });
 });
 
+router.get("/become-member", (req, res) =>
+  res.render("member-sign-up", {
+    errors: [],
+    values: {},
+  }),
+);
+
+router.post("/become-member", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.redirect("/");
+    }
+
+    if (req.body.password === "1234") {
+      await db.query("UPDATE users SET membership = $1 WHERE id = $2", [
+        "member",
+        req.user.id,
+      ]);
+    }
+
+    res.redirect("/");
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/become-admin", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.redirect("/");
+    }
+
+    if (req.body.password === "12345") {
+      await db.query("UPDATE users SET membership = $1 WHERE id = $2", [
+        "admin",
+        req.user.id,
+      ]);
+    }
+
+    res.redirect("/");
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
