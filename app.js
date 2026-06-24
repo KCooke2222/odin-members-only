@@ -64,8 +64,34 @@ app.use((req, res, next) => {
 });
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", (req, res) => {
-  res.render("index");
+app.get("/", async (req, res, next) => {
+  try {
+    let result;
+
+    if (
+      req.user &&
+      (req.user.membership === "member" || req.user.membership === "admin")
+    ) {
+      result = await pool.query(`
+        SELECT messages.id, messages.text, messages.image_url, messages.created_at, users.username
+        FROM messages
+        JOIN users ON messages.user_id = users.id
+        ORDER BY messages.created_at DESC
+      `);
+    } else {
+      result = await pool.query(`
+        SELECT id, text, image_url
+        FROM messages
+        ORDER BY created_at DESC
+      `);
+    }
+
+    res.render("index", {
+      messages: result.rows,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.use("/users", usersRouter);

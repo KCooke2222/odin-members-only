@@ -7,6 +7,7 @@
 <body>
   <% if (locals.currentUser) {%>
     <h1>WELCOME BACK <%= currentUser.username %></h1>
+    <a href="/messages/new">CREATE NEW MESSAGE</a>
     <a href="/users/become-member">BECOME MEMBER</a>
     <a href="/users/log-out">LOG OUT</a>
   <% } else { %>
@@ -19,5 +20,22 @@
       <button type="submit">Log In</button>
     </form>
   <%}%>
+  <% messages.forEach((message) => { %>
+  <article>
+    <p><%= message.text %></p>
+
+    <% if (message.image_url) { %>
+      <img src="<%= message.image_url %>" alt="" width="200" />
+    <% } %>
+
+    <% if (message.username) { %>
+      <p>By <%= message.username %></p>
+    <% } %>
+
+    <% if (message.created_at) { %>
+      <p><%= message.created_at.toLocaleString() %></p>
+    <% } %>
+  </article>
+<% }) %>
 </body>
 </html>
